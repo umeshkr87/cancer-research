@@ -37,9 +37,6 @@ env/
 .ipynb_checkpoints
 
 # Project specific
-data/raw/*
-data/processed/*
-data/interim/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/interim/.gitkeep
@@ -57,5 +54,9 @@ logs/
 *.tsv
 *.tsv.gz
 *.csv data/raw/variants/Cosmic_MutantCensus_v102_GRCh38.tsv
+*.vcf
+*.vcf.gz
 data/raw/variants/*.tsv
 data/raw/variants/*.tsv.gz
+data/raw/variants/vcf_GRCh38/clinvar_vcf_GRCh38.vcf
+*.vcf
