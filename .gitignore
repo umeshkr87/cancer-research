@@ -56,4 +56,6 @@ logs/
 *.json
 *.tsv
 *.tsv.gz
-*.csv 
+*.csv data/raw/variants/Cosmic_MutantCensus_v102_GRCh38.tsv
+data/raw/variants/*.tsv
+data/raw/variants/*.tsv.gz
