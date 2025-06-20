@@ -1,0 +1,61 @@
+ClinVar Prostate Cancer Variant Analysis Summary
+==================================================
+
+Total variants: 191,954
+Unique genes: 741
+Pathogenic variants: 56,655 (29.5%)
+Chromosomes: 1, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 2, 20, 21, 22, 3, 4, 5, 6, 7, 8, 9, X
+
+Clinical Significance Distribution:
+  Uncertain_significance: 73,681
+  Likely benign: 44,473
+  Pathogenic: 30,375
+  Conflicting classifications of pathogenicity: 20,745
+  Benign: 13,681
+  Likely pathogenic: 5,528
+  Not_provided: 3,276
+  Unknown: 137
+  no classification for the single variant: 25
+  association: 10
+  Risk_factor: 6
+  Drug_response: 4
+  other: 3
+  Likely pathogenic, low penetrance: 2
+  Conflicting classifications of pathogenicity|association|risk factor: 1
+  no classifications from unflagged records: 1
+  Benign|drug response: 1
+  Benign/Likely benign|risk factor: 1
+  Pathogenic|risk factor: 1
+  Conflicting classifications of pathogenicity|association: 1
+  Pathogenic/Likely pathogenic|association: 1
+  Conflicting classifications of pathogenicity|risk factor: 1
+
+Top 20 Prostate Cancer Genes:
+  BRCA2: 19,685
+  ATM: 18,193
+  BRCA1: 14,645
+  TSC2: 11,430
+  MSH6: 9,848
+  MSH2: 7,731
+  PALB2: 6,144
+  BRIP1: 6,029
+  MLH1: 5,931
+  FANCA: 5,544
+  PMS2: 5,424
+  TSC1: 5,187
+  CDH1: 4,848
+  BARD1: 4,310
+  CHEK2: 4,293
+  RB1: 4,156
+  PTEN: 3,714
+  NBN: 3,603
+  TP53: 3,572
+  FANCM: 3,014
+
+Pathway Distribution:
+  core_prostate_gene: 2,490
+  dna_repair_gene: 28,652
+  hormone_pathway_gene: 3,697
+  pi3k_pathway_gene: 29,322
+  prostate_associated_gene: 23,782
+  cancer_predisposition_gene: 102,874
