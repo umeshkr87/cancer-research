@@ -1,0 +1,11 @@
+INFO:    Converting OCI blobs to SIF format
+INFO:    Starting build...
+Copying blob sha256:2f2850c9d144a83b2a9a62f1bd9e2bd9d2cf6b642f81584751df23b6d72aa01e
+Copying blob sha256:bd9ddc54bea929a22b334e73e026d4136e5b73f5cc29942896c72e4ece69b13d
+Copying blob sha256:0cacab098358fffeef7e18bd537907ae734dcfa12ab45fbcd0e62cc9b37264a8
+Copying config sha256:1dd89ba9dbe88e32582fa81d49cddf125b19737b76889c0570690bbfecc7642a
+Writing manifest to image destination
+2025/06/23 14:54:42  info unpack layer: sha256:0cacab098358fffeef7e18bd537907ae734dcfa12ab45fbcd0e62cc9b37264a8
+2025/06/23 14:54:42  info unpack layer: sha256:bd9ddc54bea929a22b334e73e026d4136e5b73f5cc29942896c72e4ece69b13d
+2025/06/23 14:54:42  info unpack layer: sha256:2f2850c9d144a83b2a9a62f1bd9e2bd9d2cf6b642f81584751df23b6d72aa01e
+INFO:    Creating SIF file...
