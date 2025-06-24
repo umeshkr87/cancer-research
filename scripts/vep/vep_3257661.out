@@ -1,0 +1,38 @@
+=== VEP Cache-Based Pipeline Started: Mon Jun 23 14:54:11 CDT 2025 ===
+Downloading correct BioContainers VEP (114.1)...
+✅ BioContainers VEP downloaded
+Validating input file...
+✅ Input variants: 213533
+Setting up VEP cache for offline operation...
+Installing VEP cache for human GRCh38...
+WARNING: Unable to carry out version check for 'ensembl-vep'
+ - getting list of available cache files
+ - downloading https://ftp.ensembl.org/pub/release-114/variation/indexed_vep_cache/homo_sapiens_vep_114_GRCh38.tar.gz
+ - unpacking homo_sapiens_vep_114_GRCh38.tar.gz
+ - converting cache, this may take some time but will allow VEP to look up variants and frequency data much faster
+ - use CTRL-C to cancel if you do not wish to convert this cache now (you may run convert_cache.pl later)
+2025-06-23 15:48:33 - Processing homo_sapiens
+2025-06-23 15:48:33 - Processing version 114_GRCh38
+2025-06-23 15:48:33 - No unprocessed types remaining, skipping
+2025-06-23 15:48:33 - All done!
+ - downloading Homo_sapiens.GRCh38.dna.toplevel.fa.gz
+ - downloading Homo_sapiens.GRCh38.dna.toplevel.fa.gz.fai
+ - downloading Homo_sapiens.GRCh38.dna.toplevel.fa.gz.gzi
+
+The FASTA file should be automatically detected by the VEP when using --cache or --offline.
+If it is not, use "--fasta /u/aa107/uiuc-cancer-research/data/processed/vep/vep_cache/homo_sapiens/114_GRCh38/Homo_sapiens.GRCh38.dna.toplevel.fa.gz"
+
+
+All done
+✅ VEP cache installation completed
+Testing VEP with small sample...
+✅ Test successful: 0 variants processed
+Running full VEP annotation with cache...
+Using 16 forks for large dataset
+=== VALIDATION ===
+Generated: Mon Jun 23 15:49:50 CDT 2025
+
+✅ VEP annotation completed
+Input variants: 213533
+Output variants: 0
+❌ No variants in output file
