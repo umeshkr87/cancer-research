@@ -41,6 +41,7 @@ env/
 !data/processed/.gitkeep
 !data/interim/.gitkeep
 data-models/
+data/processed/vep/vep_cache/
 logs/
 *.log
 
@@ -60,3 +61,4 @@ data/raw/variants/*.tsv
 data/raw/variants/*.tsv.gz
 data/raw/variants/vcf_GRCh38/clinvar_vcf_GRCh38.vcf
 *.vcf
+*.sif
