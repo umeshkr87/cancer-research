@@ -1,65 +1,62 @@
-TabNet Prostate Cancer Dataset Merge Report
-==========================================
+=== ENHANCED TABNET PROSTATE CANCER MERGE REPORT ===
 
-📊 DATASET SUMMARY
---------------------------------------------------
-Total variants: 213,539
-Unique genes: 10694
-Unique chromosomes: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y']
-Data sources: COSMIC, ClinVar, TCGA
+Generated: 2025-06-27 17:31:59.803471
 
-📈 SOURCE DISTRIBUTION
---------------------------------------------------
-ClinVar: 191,954 (89.9%)
-TCGA: 21,420 (10.0%)
-COSMIC: 165 (0.1%)
+DATASET SUMMARY:
+- Total variants: 212,067
+- Valid coordinates: 212,067
+- Unique genes: 10408
+- Data sources: COSMIC, ClinVar, TCGA
 
-🎯 VARIANT CLASSIFICATION DISTRIBUTION
---------------------------------------------------
-VUS: 98,563 (46.2%)
-Actionable_Pathogenic: 51,124 (23.9%)
-Likely_Benign: 44,474 (20.8%)
-Benign: 13,682 (6.4%)
-Likely_Actionable: 5,696 (2.7%)
+SOURCE DISTRIBUTION:
+- ClinVar: 191,891 (90.5%)
+- TCGA: 20,054 (9.5%)
+- COSMIC: 122 (0.1%)
 
-🧬 PATHWAY GENE ANALYSIS
---------------------------------------------------
-Dna Repair: 96,632 variants (45.3%)
-Hormone Pathway: 1,922 variants (0.9%)
-Pi3K Pathway: 25,759 variants (12.1%)
-Core Prostate: 8,505 variants (4.0%)
+TOP 20 GENES:
+- BRCA2: 19,590
+- BRCA1: 12,875
+- TSC2: 11,364
+- ATM: 11,239
+- MSH6: 9,558
+- MSH2: 7,663
+- ATM|C11orf65: 6,956
+- PALB2: 6,143
+- BRIP1: 6,024
+- MLH1: 5,920
+- PMS2: 5,415
+- TSC1: 5,188
+- CDH1: 4,813
+- FANCA: 4,416
+- BARD1: 4,302
+- CHEK2: 4,278
+- RB1: 4,048
+- TP53: 3,581
+- NBN: 3,483
+- PTEN: 3,246
 
-💊 THERAPEUTIC TARGETS
---------------------------------------------------
-PARP Inhibitor Targets: 96,632
-Hormone Therapy Targets: 1,922
-
-🔝 TOP 20 GENES
---------------------------------------------------
-BRCA2: 19,601
-BRCA1: 12,878
-TSC2: 11,364
-ATM: 11,244
-MSH6: 9,559
-MSH2: 7,664
-ATM|C11orf65: 6,957
-PALB2: 6,144
-BRIP1: 6,024
-MLH1: 5,923
-PMS2: 5,416
-TSC1: 5,188
-CDH1: 4,815
-FANCA: 4,417
-BARD1: 4,302
-CHEK2: 4,279
-RB1: 4,050
-TP53: 3,618
-NBN: 3,483
-PTEN: 3,266
-
-📂 OUTPUT FILES
---------------------------------------------------
-Merged dataset: /u/aa107/uiuc-cancer-research/data/processed/merged/merged_prostate_variants.csv
-This report: /u/aa107/uiuc-cancer-research/data/processed/merged/merge_report.txt
-Features ready for TabNet training: 57
-Target variable: variant_classification (5 classes)
+CHROMOSOME DISTRIBUTION:
+- chr1: 12,181
+- chr10: 5,268
+- chr11: 22,383
+- chr12: 2,636
+- chr13: 24,186
+- chr14: 5,089
+- chr15: 3,938
+- chr16: 28,747
+- chr17: 34,476
+- chr18: 329
+- chr19: 4,381
+- chr2: 24,989
+- chr20: 502
+- chr21: 220
+- chr22: 4,700
+- chr3: 12,594
+- chr4: 816
+- chr5: 2,314
+- chr6: 1,633
+- chr7: 6,575
+- chr8: 4,802
+- chr9: 7,759
+- chrX: 1,534
+- chrY: 15
