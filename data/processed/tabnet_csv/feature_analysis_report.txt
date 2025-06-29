@@ -1,0 +1,96 @@
+🔍 TabNet CSV Feature Analysis
+==================================================
+📁 Loading CSV: /u/aa107/uiuc-cancer-research/data/processed/tabnet_csv/prostate_variants_tabnet.csv
+✅ Loaded successfully!
+
+📊 BASIC DATASET STATISTICS
+------------------------------
+Total variants: 193,278
+Total features: 87
+Memory usage: 578.0 MB
+
+🔢 FEATURE TYPE BREAKDOWN
+------------------------------
+Numeric features: 46
+Text features: 41
+
+❓ MISSING DATA ANALYSIS
+------------------------------
+Features with >20% missing data:
+   quality_score: 100.0%
+   HGVSc: 100.0%
+   HGVSp: 100.0%
+   MOTIF_POS: 100.0%
+   TRANSCRIPTION_FACTORS: 100.0%
+   HIGH_INF_POS: 100.0%
+   MOTIF_NAME: 100.0%
+   MOTIF_SCORE_CHANGE: 100.0%
+   FLAGS: 99.9%
+   AF: 95.1%
+Overall missing data: 6,686,643 cells (39.8%)
+
+🧬 KEY FEATURE ANALYSIS
+------------------------------
+Variant type distribution:
+   SNV: 159,969 (82.8%)
+   deletion: 21,512 (11.1%)
+   insertion: 10,506 (5.4%)
+   complex: 1,291 (0.7%)
+
+Variant impact distribution:
+   MODERATE: 77,191 (39.9%)
+   LOW: 42,988 (22.2%)
+   MODIFIER: 42,330 (21.9%)
+   HIGH: 30,769 (15.9%)
+
+🔬 FUNCTIONAL SCORES AVAILABILITY
+------------------------------
+   sift_score: 74,563 (38.6%)
+   sift_prediction: 74,563 (38.6%)
+   polyphen_score: 66,747 (34.5%)
+   polyphen_prediction: 66,747 (34.5%)
+
+🧬 TOP AFFECTED GENES
+------------------------------
+   BRCA2: 18,099 variants
+   ATM: 18,083 variants
+   BRCA1: 14,630 variants
+   TSC2: 10,997 variants
+   MSH6: 9,843 variants
+   MSH2: 7,681 variants
+   PALB2: 6,133 variants
+   MLH1: 5,924 variants
+   BRIP1: 5,817 variants
+   TSC1: 5,182 variants
+
+💊 THERAPEUTIC PATHWAY INDICATORS
+------------------------------
+   dna_repair_pathway: 65,012 variants (33.6%)
+   mismatch_repair_pathway: 28,397 variants (14.7%)
+   hormone_pathway: 1,215 variants (0.6%)
+   is_important_gene: 90,712 variants (46.9%)
+
+🤖 TABNET TRAINING READINESS
+------------------------------
+Usable numeric features: 29
+Usable categorical features: 11
+Total usable features: 40
+
+📋 QUALITY ASSESSMENT
+------------------------------
+Data volume: ✅ Excellent (193,278 variants)
+Feature richness: ✅ Adequate (40 usable features)
+Missing data: ❌ High (39.8%)
+
+🎯 OVERALL READINESS: ✅ GOOD - Ready with minor preprocessing
+
+💡 RECOMMENDATIONS
+------------------------------
+🔧 Minor preprocessing recommended:
+   - Handle missing data (imputation or removal)
+   - Consider feature engineering for more predictors
+✅ Then proceed with TabNet training
+
+==================================================
+Analysis complete! 🎉
+==================================================

@@ -1,0 +1,98 @@
+🔍 Analyzing VEP VCF: /u/aa107/uiuc-cancer-research/data/processed/vep/vep_annotated.vcf
+======================================================================
+📋 CSQ Fields Found: 60 fields
+🔗 CSQ Format: Allele | Consequence | IMPACT | SYMBOL | Gene | Feature_type | Feature | BIOTYPE | EXON | INTRON...
+
+📊 Starting variant analysis...
+
+📈 Processed 50,000 variants...
+📈 Processed 100,000 variants...
+📈 Processed 150,000 variants...
+
+======================================================================
+📊 VEP ANNOTATION ANALYSIS REPORT
+======================================================================
+🔢 BASIC STATISTICS:
+   Total variants processed: 193,278
+   Annotated variants: 193,278
+   Annotation rate: 100.0%
+   CSQ fields available: 60
+
+🧬 FUNCTIONAL PREDICTION SCORES:
+   ✅ PolyPhen: 66,747 variants (34.5%)
+   ✅ SIFT: 74,563 variants (38.6%)
+
+🎯 VARIANT IMPACT DISTRIBUTION:
+   MODERATE: 77,191 (39.9%)
+   LOW: 42,988 (22.2%)
+   MODIFIER: 42,330 (21.9%)
+   HIGH: 30,769 (15.9%)
+
+⚡ TOP VARIANT CONSEQUENCES:
+   missense_variant: 72,006 (37.3%)
+   synonymous_variant: 28,938 (15.0%)
+   intron_variant: 22,224 (11.5%)
+   frameshift_variant: 18,658 (9.7%)
+   upstream_gene_variant: 8,513 (4.4%)
+   downstream_gene_variant: 6,267 (3.2%)
+   stop_gained: 5,728 (3.0%)
+   splice_polypyrimidine_tract_variant&intron_variant: 5,124 (2.7%)
+   splice_region_variant&splice_polypyrimidine_tract_variant&intron_variant: 3,886 (2.0%)
+   missense_variant&splice_region_variant: 2,680 (1.4%)
+
+🧬 TOP AFFECTED GENES:
+   BRCA2: 18,099 variants
+   ATM: 18,083 variants
+   BRCA1: 14,630 variants
+   TSC2: 10,997 variants
+   MSH6: 9,843 variants
+   MSH2: 7,681 variants
+   PALB2: 6,133 variants
+   MLH1: 5,924 variants
+   BRIP1: 5,817 variants
+   TSC1: 5,182 variants
+
+🔬 SAMPLE ANNOTATIONS:
+
+   Sample 1: 17:7674894 G>A
+      Consequence: stop_gained
+      IMPACT: HIGH
+      SYMBOL: TP53
+      Feature: ENST00000269305
+
+   Sample 2: 17:7674945 G>A
+      Consequence: stop_gained
+      IMPACT: HIGH
+      SYMBOL: TP53
+      Feature: ENST00000269305
+
+   Sample 3: X:67723710 A>G
+      Consequence: missense_variant
+      IMPACT: MODERATE
+      SYMBOL: AR
+      Feature: ENST00000374690
+
+   Sample 4: 13:32344567 C>T
+      Consequence: missense_variant
+      IMPACT: MODERATE
+      SYMBOL: BRCA2
+      Feature: ENST00000380152
+
+   Sample 5: X:67723701 C>T
+      Consequence: missense_variant
+      IMPACT: MODERATE
+      SYMBOL: AR
+      Feature: ENST00000374690
+
+🤖 TABNET READINESS ASSESSMENT:
+   Estimated usable features: ~44
+   ✅ Data volume: Excellent (193,278 variants)
+   ⚠️  Functional scores: Basic (2 types)
+   ✅ Impact diversity: Good (4 levels)
+
+🎯 OVERALL ASSESSMENT:
+   ✅ GOOD - Ready with minor enhancements
+
+======================================================================
+Analysis complete! 🎉
+======================================================================
