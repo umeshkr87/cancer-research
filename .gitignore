@@ -60,5 +60,6 @@ logs/
 data/raw/variants/*.tsv
 data/raw/variants/*.tsv.gz
 data/raw/variants/vcf_GRCh38/clinvar_vcf_GRCh38.vcf
+data/processed/tabnet_csv/prostate_variants_tabnet.csv
 *.vcf
 *.sif
