@@ -1,0 +1,129 @@
+=== VEP WITH SCRATCH STORAGE STARTED: Fri Jun 27 11:17:31 CDT 2025 ===
+🎯 Target: 100% success rate + SIFT/PolyPhen functional scores
+🔬 Solution: dbNSFP plugin for comprehensive annotation
+📁 Directories created:
+  • Cache: /scratch/aa107/vep_workspace/vep_cache
+  • Container: /scratch/aa107/vep_workspace/containers
+  • Output: /u/aa107/uiuc-cancer-research/data/processed/vep
+📦 Downloading BioContainers VEP (114.1)...
+✅ BioContainers VEP downloaded
+📊 Validating input file...
+✅ Input variants: 195147
+📚 Setting up VEP cache...
+Installing VEP cache for human GRCh38...
+WARNING: Unable to carry out version check for 'ensembl-vep'
+ - getting list of available cache files
+ - downloading https://ftp.ensembl.org/pub/release-114/variation/indexed_vep_cache/homo_sapiens_vep_114_GRCh38.tar.gz
+ - unpacking homo_sapiens_vep_114_GRCh38.tar.gz
+ - converting cache, this may take some time but will allow VEP to look up variants and frequency data much faster
+ - use CTRL-C to cancel if you do not wish to convert this cache now (you may run convert_cache.pl later)
+2025-06-27 13:19:39 - Processing homo_sapiens
+2025-06-27 13:19:39 - Processing version 114_GRCh38
+2025-06-27 13:19:39 - No unprocessed types remaining, skipping
+2025-06-27 13:19:39 - All done!
+ - downloading Homo_sapiens.GRCh38.dna.toplevel.fa.gz
+ - downloading Homo_sapiens.GRCh38.dna.toplevel.fa.gz.fai
+ - downloading Homo_sapiens.GRCh38.dna.toplevel.fa.gz.gzi
+
+The FASTA file should be automatically detected by the VEP when using --cache or --offline.
+If it is not, use "--fasta /scratch/aa107/vep_workspace/vep_cache/homo_sapiens/114_GRCh38/Homo_sapiens.GRCh38.dna.toplevel.fa.gz"
+
+
+All done
+✅ VEP cache installation completed
+🔗 Cache symlink created: /u/aa107/uiuc-cancer-research/data/processed/vep/vep_cache_link -> /scratch/aa107/vep_workspace/vep_cache
+🧪 Testing VEP with small sample...
+✅ Test successful: 992 variants processed
+🚀 Running full VEP annotation with dbNSFP...
+Using 16 forks for large dataset
+WARNING: 1814354 : substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 3724.
+WARNING: 1847372 : substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 5993.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 5993.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 5993.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 5993.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 5993.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 5993.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 5993.
+WARNING: 1860400 : substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 6950.
+WARNING: 1867129 : substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 7343.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 7343.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 7343.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 7343.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 7343.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 7343.
+substr outside of string at /usr/local/share/ensembl-vep-114.1-0/Bio/EnsEMBL/Variation/Utils/VariationEffect.pm line 1061, <__ANONIO__> line 7343.
+Exiting the program. The input file appears to be unsorted. Please sort by chromosome and by location and re-submit.
+📋 Copying results to project directory...
+✅ Results copied to project directory
+📊 Validating results...
+=== FINAL VEP WITH dbNSFP FUNCTIONAL SCORES COMPLETED: Fri Jun 27 13:52:14 CDT 2025 ===
+Generated: Fri Jun 27 13:52:14 CDT 2025
+
+✅ VEP annotation completed
+Input variants: 195147
+Output variants: 11422
+✅ VEP annotations found: 11422 variants with CSQ data
+Sample annotation: CSQ=T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000269305|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|YES|CCDS11118.1|ENSP00000269305|P04637.307|K7PPA8.92|UPI000002ED67|P04637-1||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000359597|protein_coding||4/8||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000352610||J3KP33.79|UPI0002065363|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000413465|protein_coding||4/6||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000410739||E7EQX7.90|UPI0001AE664F|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000420246|protein_coding||5/11||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS45606.1|ENSP00000391127|P04637.307||UPI0000456A12|P04637-2||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000445888|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS11118.1|ENSP00000391478|P04637.307|K7PPA8.92|UPI000002ED67|P04637-1||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000455263|protein_coding||5/11||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS45605.1|ENSP00000398846|P04637.307||UPI00005B7310|P04637-3||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000503591|protein_coding||6/11||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS11118.1|ENSP00000426252|P04637.307|E9PCY9.92&K7PPA8.92|UPI000002ED67|P04637-1||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000504290|protein_coding||1/7||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73967.1|ENSP00000484409|P04637.307||UPI00005B7312|P04637-9||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000504937|protein_coding||1/6||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73966.1|ENSP00000481179|P04637.307||UPI000041E410|P04637-7||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant&non_coding_transcript_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000505014|retained_intron||4/4||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||||||||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000508793|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS11118.1|ENSP00000424104|P04637.307|E7EMR6.94&K7PPA8.92|UPI000002ED67|P04637-1||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000509690|protein_coding||2/7||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73966.1|ENSP00000425104|P04637.307|E7ESS1.93|UPI000041E410|P04637-7||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000510385|protein_coding||1/7||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73968.1|ENSP00000478499|P04637.307||UPI00005B7311|P04637-8||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000514944|protein_coding||4/9||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000423862||E9PFT5.90|UPI0026453509|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant&non_coding_transcript_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000574684|protein_coding_CDS_not_defined||1/1||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||||||||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000576024|protein_coding||5/9||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000458393||I3L0W9.53|UPI0032CA1234|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000604348|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000473895||S4R334.65|UPI0000E24601|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000610292|protein_coding||4/9||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73969.1|ENSP00000478219|P04637.307|H2EHT1.83|UPI000040A8D3|P04637-4||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000610538|protein_coding||5/11||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73970.1|ENSP00000480868|P04637.307||UPI0001FDB80C|P04637-6||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000610623|protein_coding||1/7||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73964.1|ENSP00000477531||A0A087WT22.65|UPI0002B83573|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000618944|protein_coding||1/7||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73965.1|ENSP00000481401||A0A087WXZ1.65|UPI0002B83575|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000619186|protein_coding||1/6||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73963.1|ENSP00000484375||A0A087X1Q1.67|UPI0002B83577|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000619485|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73969.1|ENSP00000482537|P04637.307|H2EHT1.83|UPI000040A8D3|P04637-4||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000620739|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73969.1|ENSP00000481638|P04637.307|H2EHT1.83|UPI000040A8D3|P04637-4||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000622645|protein_coding||5/11||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS73971.1|ENSP00000482222|P04637.307||UPI0001FDB80B|P04637-5||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant&NMD_transcript_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000635293|nonsense_mediated_decay||5/11||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000488924||A0A0U1RQC9.50|UPI000719A126|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000714356|protein_coding||4/9||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000519623|||UPI0032CD868D|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000714357|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS11118.1|ENSP00000519624||K7PPA8.92|UPI000002ED67|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant&NMD_transcript_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000714358|nonsense_mediated_decay||4/9||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000519625||A0A386NBZ1.10|UPI000EB7320C|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000714359|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998||CCDS11118.1|ENSP00000519626||K7PPA8.92|UPI000002ED67|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000714408|protein_coding||5/10||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000519678|||UPI0032CA94D8|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||,T|splice_donor_variant|HIGH|TP53|ENSG00000141510|Transcript|ENST00000714409|protein_coding||5/9||||||||rs1597369404&COSV52709511&COSV52900265&COSV53486980&COSV99478821&CS114004||-1||SNV|HGNC|HGNC:11998|||ENSP00000519679|||UPI0032CFDD28|||||||||||||||||||||pathogenic&not_provided|0&1&1&1&1&1|1&1&1&1&1&1||ClinVar::RCV002536885&RCV000786833&VCV000635391--COSMIC::COSM44495--COSMIC::COSM45711--COSMIC::COSM46407--COSMIC::COSM7409548|||||
+Functional consequences found:
+  Missense variants: 734
+  Stop gained: 2362
+  Splice variants: 1503
+Output file size: 120M
+Success rate: 5.8%
+🧹 Cleaning up temporary files...
+
+=== STORAGE SUMMARY ===
+Cache location: /scratch/aa107/vep_workspace/vep_cache
+Cache size: 26G
+Container location: /scratch/aa107/vep_workspace/containers/vep-biocontainer.sif
+Output location: /u/aa107/uiuc-cancer-research/data/processed/vep
+
+=== FILES GENERATED ===
+total 120M
+-rw------- 1 aa107 root  16K Jun 27 13:52 validation_report.txt
+-rw------- 1 aa107 root 120M Jun 27 13:52 vep_annotated.vcf
+-rw------- 1 aa107 root 8.8K Jun 27 13:52 vep_annotation.log
+lrwxrwxrwx 1 aa107 root   38 Jun 27 13:22 vep_cache_link -> /scratch/aa107/vep_workspace/vep_cache
+-rw------- 1 aa107 root    0 Jun 27 13:52 vep_summary.html
+
+=== NEXT STEPS ===
+1. Review validation report: /u/aa107/uiuc-cancer-research/data/processed/vep/validation_report.txt
+2. Check VEP summary: /u/aa107/uiuc-cancer-research/data/processed/vep/vep_summary.html
+3. Convert VCF to CSV for TabNet: python scripts/vep/vcf_to_tabnet.py
+4. Proceed with TabNet training
+=== VEP WITH SCRATCH STORAGE COMPLETED: Fri Jun 27 13:52:18 CDT 2025 ===
+✅ SUCCESS! VEP annotation completed with 11422 variants
+📁 Main output: /u/aa107/uiuc-cancer-research/data/processed/vep/vep_annotated.vcf
+📊 Summary: /u/aa107/uiuc-cancer-research/data/processed/vep/vep_summary.html
+📋 Report: /u/aa107/uiuc-cancer-research/data/processed/vep/validation_report.txt
+🔗 Cache symlink: /u/aa107/uiuc-cancer-research/data/processed/vep/vep_cache_link -> /scratch/aa107/vep_workspace/vep_cache
+💾 Scratch workspace: /scratch/aa107/vep_workspace
