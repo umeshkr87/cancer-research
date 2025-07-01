@@ -64,3 +64,4 @@ data/processed/tabnet_csv/prostate_variants_tabnet.csv
 *.vcf
 *.sif
 data/processed/tabnet_csv/prostate_variants_tabnet_imputed.csv
+data/processed/tabnet_csv/prostate_variants_tabnet_imputed_v1.csv
