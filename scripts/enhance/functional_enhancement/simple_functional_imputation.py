@@ -53,42 +53,44 @@ def download_alphamissense_data(scratch_dir):
             total_size = int(response.headers.get('content-length', 0))
             downloaded = 0
             
-            print(f"📊 Expected size: {total_size / 1024 / 1024:.1f} MB")
-            
             with open(alphamissense_file, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
-                        if total_size > 0 and downloaded % (10 * 1024 * 1024) == 0:  # Every 10MB
+                        if total_size > 0:
                             percent = (downloaded / total_size) * 100
-                            print(f"📊 Progress: {percent:.1f}% ({downloaded/1024/1024:.1f}MB)")
+                            print(f"\rProgress: {percent:.1f}% ({downloaded:,}/{total_size:,} bytes)", end='')
             
             print(f"\n✅ Download complete: {alphamissense_file}")
-            print(f"📏 Final size: {alphamissense_file.stat().st_size / 1024 / 1024:.1f} MB")
+            print(f"📏 Downloaded size: {alphamissense_file.stat().st_size / 1024 / 1024:.1f} MB")
             
         except Exception as e:
             print(f"❌ Download failed: {e}")
             if alphamissense_file.exists():
                 alphamissense_file.unlink()  # Remove partial download
             raise
-    else:
-        print(f"✅ AlphaMissense file already exists: {alphamissense_file}")
     
-    # Extract if needed
+    # Extract the file
     if not alphamissense_extracted.exists():
-        print("📂 Extracting AlphaMissense database...")
+        print(f"📦 Extracting AlphaMissense database...")
+        print(f"Source: {alphamissense_file}")
+        print(f"Target: {alphamissense_extracted}")
+        
         try:
             with gzip.open(alphamissense_file, 'rt') as f_in:
                 with open(alphamissense_extracted, 'w') as f_out:
+                    # Copy in chunks to show progress
                     chunk_size = 1024 * 1024  # 1MB chunks
                     while True:
                         chunk = f_in.read(chunk_size)
                         if not chunk:
                             break
                         f_out.write(chunk)
+                        print(".", end='', flush=True)
             
-            print(f"✅ Extracted to: {alphamissense_extracted}")
+            print(f"\n✅ Extraction complete")
+            print(f"📁 Extracted to: {alphamissense_extracted}")
             print(f"📏 Extracted size: {alphamissense_extracted.stat().st_size / 1024 / 1024:.1f} MB")
             
         except Exception as e:
@@ -144,9 +146,9 @@ def load_alphamissense_lookup(alphamissense_file):
     
     print(f"📊 Loaded {len(alphamissense_df):,} AlphaMissense predictions")
     
-    # Create lookup key: chr_pos_ref_alt
+    # Create lookup key: chr_pos_ref_alt (FIX: Strip 'chr' prefix for standardization)
     alphamissense_df['lookup_key'] = (
-        alphamissense_df['#CHROM'].astype(str) + '_' +
+        alphamissense_df['#CHROM'].astype(str).str.replace('chr', '') + '_' +
         alphamissense_df['POS'].astype(str) + '_' +
         alphamissense_df['REF'] + '_' +
         alphamissense_df['ALT']
@@ -407,7 +409,8 @@ def main():
         analyze_pathway_enrichment(df_enhanced)
         print(f"✅ Step 5 complete: Pathway analysis done")
     except Exception as e:
-        print(f"⚠️  Step 5 warning - Pathway analysis failed: {e}")
+        print(f"⚠️  Step 5 warning - Error in pathway analysis: {e}")
+        # Continue despite pathway analysis errors
     
     # Step 6: Validate enhancement
     print(f"\n🔄 Step 6: Validating enhancement...")
@@ -415,11 +418,15 @@ def main():
         validate_enhancement(df_original, df_enhanced)
         print(f"✅ Step 6 complete: Validation passed")
     except Exception as e:
-        print(f"⚠️  Step 6 warning - Validation failed: {e}")
+        print(f"❌ Step 6 failed - Error in validation: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
     
-    # Step 7: Calculate final statistics
-    print(f"\n🔄 Step 7: Calculating statistics...")
+    # Step 7: Save results
+    print(f"\n🔄 Step 7: Saving enhanced results...")
     try:
+        # Calculate statistics for report
         coverage_count = df_enhanced['alphamissense_pathogenicity'].notna().sum()
         coverage_rate = (coverage_count / len(df_enhanced)) * 100
         
@@ -427,28 +434,30 @@ def main():
             'coverage_count': coverage_count,
             'coverage_rate': coverage_rate
         }
-        print(f"✅ Step 7 complete: {coverage_count:,} variants covered ({coverage_rate:.1f}%)")
-    except Exception as e:
-        print(f"❌ Step 7 failed - Error calculating statistics: {e}")
-        sys.exit(1)
-    
-    # Step 8: Save results
-    print(f"\n🔄 Step 8: Saving results...")
-    try:
+        
+        # Create output directory
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        
         save_enhanced_results(df_enhanced, output_file, report_file, stats)
-        print(f"✅ Step 8 complete: Results saved")
+        print(f"✅ Step 7 complete: All results saved")
     except Exception as e:
-        print(f"❌ Step 8 failed - Error saving results: {e}")
+        print(f"❌ Step 7 failed - Error saving results: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
     
+    # Final summary
     print(f"\n🎉 ALPHAMISSENSE ENHANCEMENT COMPLETE!")
     print("=" * 60)
-    print(f"✅ Enhanced dataset: {output_file}")
-    print(f"📊 Report: {report_file}")
-    print(f"🎯 Data leakage eliminated: Ready for legitimate TabNet training")
-    print(f"📈 Expected accuracy: 75-85% (clinically realistic)")
+    print(f"📊 Summary:")
+    print(f"   Input variants: {len(df_original):,}")
+    print(f"   Enhanced variants: {len(df_enhanced):,}")
+    print(f"   AlphaMissense coverage: {coverage_count:,} ({coverage_rate:.1f}%)")
+    print(f"   Output file: {output_file}")
+    print(f"   Report file: {report_file}")
+    print()
+    print("🔬 Ready for TabNet training with legitimate functional scores!")
+    print("🎯 Expected model accuracy: 75-85% (no more data leakage)")
 
 if __name__ == "__main__":
     main()
