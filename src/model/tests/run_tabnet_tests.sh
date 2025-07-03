@@ -1,168 +1,129 @@
 #!/bin/bash
-set -e
+# ================================================================
+# TabNet Test Runner - Enhanced Version
+# Properly sets up conda environment and runs tests
+# ================================================================
 
-echo "🧬 TabNet Environment Validation - Campus Cluster"
-echo "==============================================="
-echo "Starting comprehensive TabNet environment validation..."
+set -euo pipefail
 
-# Configuration
-PROJECT_ROOT="/u/aa107/uiuc-cancer-research"
-cd "$PROJECT_ROOT"
-
-echo "📁 Project directory: $(pwd)"
-echo "🕐 Started at: $(date)"
-
-# Step 1: Environment Setup
+echo "🧪 TABNET TEST RUNNER - ENHANCED VERSION"
+echo "=================================================="
+echo "Setting up environment and running tests..."
 echo ""
-echo "🔧 STEP 1: ENVIRONMENT SETUP"
-echo "============================"
 
-# Load anaconda module
+# === CONFIGURATION ===
+PROJECT_DIR="/u/aa107/uiuc-cancer-research"
+TEST_SCRIPT="${PROJECT_DIR}/src/model/tests/test_environment.py"
+
+# === ENVIRONMENT SETUP ===
+echo "🔧 ENVIRONMENT SETUP"
+echo "-------------------"
+
+# Navigate to project directory
+cd "${PROJECT_DIR}"
+echo "Working directory: $(pwd)"
+
+# Load anaconda module (required on campus cluster)
 echo "Loading anaconda module..."
 module load anaconda3
 
-# Initialize conda for this session (key fix)
-echo "Initializing conda for bash..."
+# Initialize conda for shell script
+echo "Initializing conda..."
 eval "$(conda shell.bash hook)"
 
 # Check if environment exists
-echo "Checking conda environments..."
 if conda env list | grep -q "tabnet-prostate"; then
-    echo "✅ tabnet-prostate environment found"
+    echo "✅ Found tabnet-prostate environment"
 else
     echo "❌ tabnet-prostate environment not found"
-    echo "🔧 Creating environment..."
-    conda create -n tabnet-prostate python=3.11 -y
-    echo "✅ Environment created"
+    echo "💡 Create it first with:"
+    echo "   module load anaconda3"
+    echo "   conda create -n tabnet-prostate python=3.11 -y"
+    echo "   conda activate tabnet-prostate"
+    echo "   pip install torch torchvision pytorch-tabnet scikit-learn pandas numpy matplotlib seaborn"
+    exit 1
 fi
 
-# Activate environment
+# Activate the conda environment
 echo "Activating tabnet-prostate environment..."
 conda activate tabnet-prostate
 
 # Verify activation
-echo "✅ Active environment: $CONDA_DEFAULT_ENV"
-echo "✅ Python location: $(which python)"
-echo "✅ Python version: $(python --version)"
-
-# Install required packages if missing
-echo "Checking/installing required packages..."
-python -c "
-import subprocess
-import sys
-
-packages = ['torch', 'pandas', 'numpy', 'scikit-learn', 'pytorch-tabnet', 'matplotlib', 'seaborn']
-missing = []
-
-for package in packages:
-    try:
-        __import__(package.replace('-', '_'))
-        print(f'✅ {package}')
-    except ImportError:
-        missing.append(package)
-        print(f'❌ {package} (missing)')
-
-if missing:
-    print(f'📦 Installing missing packages: {missing}')
-    for package in missing:
-        try:
-            if package == 'torch':
-                # Install PyTorch with CUDA support
-                subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'torch', 'torchvision', 'torchaudio', '--index-url', 'https://download.pytorch.org/whl/cu118'], timeout=300)
-            else:
-                subprocess.check_call([sys.executable, '-m', 'pip', 'install', package], timeout=120)
-            print(f'✅ {package} installed')
-        except Exception as e:
-            print(f'❌ Failed to install {package}: {e}')
-else:
-    print('✅ All packages available')
-"
-
+echo "✅ Environment activated:"
+echo "  Python: $(which python)"
+echo "  Python version: $(python --version)"
+echo "  Conda env: $CONDA_DEFAULT_ENV"
 echo ""
-echo "🧪 STEP 2: LOCAL ENVIRONMENT TESTS"
-echo "=================================="
-echo "Running local tests with activated environment..."
 
-# Run local tests in activated environment
-python src/model/tests/test_environment.py
+# === DEPENDENCY CHECK ===
+echo "📦 CHECKING DEPENDENCIES"
+echo "-----------------------"
 
-LOCAL_EXIT_CODE=$?
+# Check core dependencies
+echo "Checking PyTorch..."
+python -c "import torch; print(f'  ✅ PyTorch: {torch.__version__}')" || {
+    echo "  ❌ PyTorch missing - installing..."
+    conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
+}
 
+echo "Checking TabNet..."
+python -c "import pytorch_tabnet; print('  ✅ TabNet: OK')" || {
+    echo "  ❌ TabNet missing - installing..."
+    pip install pytorch-tabnet
+}
+
+echo "Checking sklearn..."
+python -c "import sklearn; print(f'  ✅ Sklearn: {sklearn.__version__}')" || {
+    echo "  ❌ Sklearn missing - installing..."
+    pip install scikit-learn
+}
+
+echo "Checking pandas/numpy..."
+python -c "import pandas as pd, numpy as np; print(f'  ✅ Pandas: {pd.__version__}, NumPy: {np.__version__}')" || {
+    echo "  ❌ Pandas/NumPy missing - installing..."
+    pip install pandas numpy
+}
+
+echo "✅ All dependencies available"
 echo ""
-echo "🚀 STEP 3: GPU ENVIRONMENT TESTS"
+
+# === RUN TESTS ===
+echo "🧪 RUNNING ENHANCED TABNET TESTS"
 echo "==============================="
 
-if [ $LOCAL_EXIT_CODE -eq 0 ]; then
-    echo "✅ Local tests passed - submitting GPU tests..."
-else
-    echo "⚠️  Local tests had issues - submitting GPU tests anyway..."
-fi
-
-# Submit GPU tests
-cd src/model/tests
-echo "Submitting GPU test job..."
-
-JOB_ID=$(sbatch test_gpu_environment.sbatch | awk '{print $4}')
-echo "✅ GPU test job submitted: $JOB_ID"
-
-# Wait for completion with timeout
-echo "Waiting for GPU test completion (max 10 minutes)..."
-TIMEOUT=600  # 10 minutes
-ELAPSED=0
-INTERVAL=15
-
-while [ $ELAPSED -lt $TIMEOUT ]; do
-    if [ $(squeue -j $JOB_ID -h 2>/dev/null | wc -l) -eq 0 ]; then
-        echo "✅ GPU test completed"
-        break
+if [ -f "$TEST_SCRIPT" ]; then
+    echo "Running: $TEST_SCRIPT"
+    echo ""
+    
+    # Run the test script
+    python "$TEST_SCRIPT"
+    
+    TEST_EXIT_CODE=$?
+    
+    echo ""
+    echo "=== TEST RESULTS ==="
+    
+    if [ $TEST_EXIT_CODE -eq 0 ]; then
+        echo "✅ ALL TESTS PASSED!"
+        echo "🎯 Environment is ready for TabNet training"
+        echo ""
+        echo "Next steps:"
+        echo "  1. Run validation: python src/model/validation/validate_tabnet.py"
+        echo "  2. Or submit cluster job: sbatch src/model/validation/validate_tabnet.sbatch"
+        exit 0
+    else
+        echo "❌ SOME TESTS FAILED (exit code: $TEST_EXIT_CODE)"
+        echo "🔧 Check the test output above for specific issues"
+        echo ""
+        echo "Common solutions:"
+        echo "  - Ensure enhanced dataset exists"
+        echo "  - Check conda environment has all packages"
+        echo "  - Verify file paths are correct"
+        exit 1
     fi
     
-    echo "  ⏳ Still running... (${ELAPSED}s/${TIMEOUT}s)"
-    sleep $INTERVAL
-    ELAPSED=$((ELAPSED + INTERVAL))
-done
-
-if [ $ELAPSED -ge $TIMEOUT ]; then
-    echo "⏰ GPU test timeout - check manually with: squeue -j $JOB_ID"
-    echo "📄 Check results later with: cat env_test_${JOB_ID}.out"
+else
+    echo "❌ Test script not found: $TEST_SCRIPT"
+    echo "💡 Make sure you're in the project root directory"
     exit 1
 fi
-
-echo ""
-echo "📊 STEP 4: RESULTS SUMMARY"
-echo "========================="
-
-# Show GPU test results
-if [ -f "env_test_${JOB_ID}.out" ]; then
-    echo "GPU Test Results:"
-    echo "----------------"
-    cat "env_test_${JOB_ID}.out"
-    
-    # Clean up
-    rm -f "env_test_${JOB_ID}.out" "env_test_${JOB_ID}.err" 2>/dev/null
-    echo ""
-    echo "🧹 Cleaned up output files"
-else
-    echo "❌ GPU test output file not found"
-fi
-
-echo ""
-echo "🎉 VALIDATION COMPLETED"
-echo "======================"
-echo "Completed at: $(date)"
-
-# Final assessment
-if [ $LOCAL_EXIT_CODE -eq 0 ]; then
-    echo "✅ Local tests: PASSED"
-else
-    echo "⚠️  Local tests: ISSUES DETECTED"
-fi
-
-echo ""
-echo "🚀 NEXT STEPS FOR WEEK 5:"
-echo "========================"
-echo "1. Run validation: ./src/model/tests/run_tabnet_tests.sh"
-echo "2. Quick validation: python src/model/validate_tabnet.py"  
-echo "3. Start optimization: python scripts/optimization/hyperparameter_optimization.py"
-echo ""
-echo "📚 Documentation: src/model/tests/README.md"
