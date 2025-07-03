@@ -2,7 +2,7 @@ PROSTATE CANCER DATA QUALITY AUDIT REPORT
 ==================================================
 
 AUDIT SUMMARY
-Timestamp: 2025-07-03T02:19:28.489821
+Timestamp: 2025-07-03T03:34:15.852997
 Total columns analyzed: 89
 Columns with concatenation: 14 (15.7%)
 Total variants: 193,278

@@ -168,6 +168,7 @@ apptainer exec \
     --regulatory --variant_class \
     --af --af_1kg --af_gnomad \
     --pubmed --var_synonyms \
+    --pick_allele_gene --pick_order canonical,appris,tsl,biotype,ccds,rank,length --pick --flag_pick --per_gene --most_severe \
     --fork $FORK_COUNT \
     --buffer_size 5000 \
     --stats_file ${TEMP_DIR}/vep_summary.html 2>&1 | tee -a $LOG_FILE
@@ -244,6 +245,152 @@ else
     echo "❌ VEP annotation failed - output file not found" | tee -a ${OUTPUT_DIR}/validation_report.txt
     exit 1
 fi
+
+# === POST-PROCESSING: CLEAN CONCATENATED FIELDS ===
+echo "🧹 Post-processing: Selecting most severe annotations..." | tee -a $LOG_FILE
+
+# Create temporary file for post-processing
+TEMP_CLEANED="${OUTPUT_DIR}/vep_annotated_cleaned.vcf"
+cp $FINAL_OUTPUT $TEMP_CLEANED
+
+# Post-process CLIN_SIG field (select most pathogenic)
+echo "Cleaning CLIN_SIG field..." | tee -a $LOG_FILE
+awk '
+BEGIN {
+    # Clinical significance severity ranking (higher = more severe)
+    clin_rank["pathogenic"] = 5
+    clin_rank["likely_pathogenic"] = 4
+    clin_rank["uncertain_significance"] = 3
+    clin_rank["likely_benign"] = 2
+    clin_rank["benign"] = 1
+    clin_rank["not_provided"] = 0
+}
+/^#/ { print; next }
+{
+    if ($0 ~ /CLIN_SIG=/) {
+        # Extract CLIN_SIG field
+        match($0, /CLIN_SIG=([^;]+)/, arr)
+        if (arr[1]) {
+            # Split by & or /
+            gsub(/[&\/]/, " ", arr[1])
+            split(arr[1], values, " ")
+            
+            # Find most severe value
+            max_rank = -1
+            best_value = ""
+            for (i in values) {
+                clean_val = tolower(values[i])
+                gsub(/[^a-z_]/, "", clean_val)
+                if (clean_val in clin_rank && clin_rank[clean_val] > max_rank) {
+                    max_rank = clin_rank[clean_val]
+                    best_value = values[i]
+                }
+            }
+            if (best_value != "") {
+                gsub(/CLIN_SIG=[^;]+/, "CLIN_SIG=" best_value)
+            }
+        }
+    }
+    print
+}' $TEMP_CLEANED > "${TEMP_CLEANED}.tmp" && mv "${TEMP_CLEANED}.tmp" $TEMP_CLEANED
+
+# Post-process Consequence field (select most severe)
+echo "Cleaning Consequence field..." | tee -a $LOG_FILE
+awk '
+BEGIN {
+    # Consequence severity ranking (higher = more severe)
+    cons_rank["transcript_ablation"] = 10
+    cons_rank["splice_acceptor_variant"] = 9
+    cons_rank["splice_donor_variant"] = 9
+    cons_rank["stop_gained"] = 8
+    cons_rank["frameshift_variant"] = 8
+    cons_rank["stop_lost"] = 7
+    cons_rank["start_lost"] = 7
+    cons_rank["transcript_amplification"] = 6
+    cons_rank["inframe_insertion"] = 5
+    cons_rank["inframe_deletion"] = 5
+    cons_rank["missense_variant"] = 4
+    cons_rank["protein_altering_variant"] = 4
+    cons_rank["splice_region_variant"] = 3
+    cons_rank["incomplete_terminal_codon_variant"] = 3
+    cons_rank["stop_retained_variant"] = 2
+    cons_rank["synonymous_variant"] = 2
+    cons_rank["coding_sequence_variant"] = 2
+    cons_rank["mature_miRNA_variant"] = 2
+    cons_rank["5_prime_UTR_variant"] = 1
+    cons_rank["3_prime_UTR_variant"] = 1
+    cons_rank["non_coding_transcript_exon_variant"] = 1
+    cons_rank["intron_variant"] = 1
+    cons_rank["NMD_transcript_variant"] = 1
+    cons_rank["upstream_gene_variant"] = 0
+    cons_rank["downstream_gene_variant"] = 0
+}
+/^#/ { print; next }
+{
+    if ($0 ~ /CSQ=/) {
+        # Extract and process CSQ field
+        csq_start = index($0, "CSQ=")
+        if (csq_start > 0) {
+            # Find end of CSQ field (next ; or end of line)
+            csq_part = substr($0, csq_start)
+            match(csq_part, /CSQ=([^;]+)/, arr)
+            if (arr[1]) {
+                # Split CSQ annotations by comma (multiple transcripts)
+                split(arr[1], transcripts, ",")
+                
+                best_consequence = ""
+                max_rank = -1
+                
+                for (i in transcripts) {
+                    # Split transcript annotation by |
+                    split(transcripts[i], fields, "|")
+                    if (length(fields) >= 2) {
+                        consequence = fields[2]  # Consequence is 2nd field
+                        
+                        # Handle concatenated consequences within single transcript
+                        if (consequence ~ /&/) {
+                            split(consequence, cons_parts, "&")
+                            for (j in cons_parts) {
+                                if (cons_parts[j] in cons_rank && cons_rank[cons_parts[j]] > max_rank) {
+                                    max_rank = cons_rank[cons_parts[j]]
+                                    best_consequence = cons_parts[j]
+                                }
+                            }
+                        } else {
+                            if (consequence in cons_rank && cons_rank[consequence] > max_rank) {
+                                max_rank = cons_rank[consequence]
+                                best_consequence = consequence
+                            }
+                        }
+                    }
+                }
+                
+                if (best_consequence != "" && max_rank > -1) {
+                    # Replace consequence in first transcript only, keep rest as-is
+                    split(transcripts[1], first_fields, "|")
+                    first_fields[2] = best_consequence
+                    new_first = ""
+                    for (k=1; k<=length(first_fields); k++) {
+                        new_first = new_first (k>1 ? "|" : "") first_fields[k]
+                    }
+                    transcripts[1] = new_first
+                    
+                    # Rebuild CSQ value
+                    new_csq = ""
+                    for (i in transcripts) {
+                        new_csq = new_csq (i>1 ? "," : "") transcripts[i]
+                    }
+                    gsub(/CSQ=[^;]+/, "CSQ=" new_csq)
+                }
+            }
+        }
+    }
+    print
+}' $TEMP_CLEANED > "${TEMP_CLEANED}.tmp" && mv "${TEMP_CLEANED}.tmp" $TEMP_CLEANED
+
+# Replace original with cleaned version
+mv $TEMP_CLEANED $FINAL_OUTPUT
+echo "✅ Post-processing completed - most severe annotations selected" | tee -a $LOG_FILE
 
 # === CLEANUP TEMP FILES (OPTIONAL) ===
 echo "🧹 Cleaning up temporary files..." | tee -a $LOG_FILE
