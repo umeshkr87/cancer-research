@@ -1,279 +1,306 @@
 #!/usr/bin/env python3
 """
-Complete TabNet Environment Validation
-Tests: imports, GPU access, TabNet functionality, project structure
+Test Environment for Enhanced TabNet Prostate Cancer Classification
+Validates AlphaMissense integration and absence of data leakage
 """
 
+import pandas as pd
+import numpy as np
 import sys
-import os
 import traceback
+from pathlib import Path
 
-def test_python_version():
-    """Test Python version"""
-    print("Testing Python version...")
-    print(f"Python version: {sys.version}")
-    if sys.version_info >= (3, 11):
-        print("✅ Python version is 3.11+")
-        return True
-    else:
-        print("⚠️  Python version is older than 3.11")
-        return False
+# Add project root to path
+sys.path.append('/u/aa107/uiuc-cancer-research/src')
 
-def test_basic_imports():
-    """Test all required imports"""
-    print("\nTesting basic imports...")
-    required_packages = [
-        ('numpy', 'np'),
-        ('pandas', 'pd'),
-        ('sklearn', None),
-        ('matplotlib.pyplot', 'plt'),
-        ('seaborn', 'sns')
-    ]
+def test_enhanced_dataset():
+    """Test the enhanced dataset with AlphaMissense features"""
+    print("\n🧬 Testing Enhanced Dataset...")
     
-    success = True
-    for package, alias in required_packages:
-        try:
-            if alias:
-                exec(f"import {package} as {alias}")
-            else:
-                exec(f"import {package}")
-            print(f"  ✅ {package}")
-        except ImportError as e:
-            print(f"  ❌ {package}: {e}")
-            success = False
-    
-    return success
-
-def test_pytorch():
-    """Test PyTorch installation"""
-    print("\nTesting PyTorch...")
     try:
-        import torch
-        import torchvision
-        print(f"  ✅ PyTorch version: {torch.__version__}")
-        print(f"  ✅ Torchvision version: {torchvision.__version__}")
-        print(f"  ✅ CUDA available: {torch.cuda.is_available()}")
-        if torch.cuda.is_available():
-            print(f"  ✅ CUDA version: {torch.version.cuda}")
+        enhanced_path = "/u/aa107/uiuc-cancer-research/data/processed/tabnet_csv/prostate_variants_tabnet_enhanced.csv"
+        
+        if not Path(enhanced_path).exists():
+            print(f"  ❌ Enhanced dataset not found: {enhanced_path}")
+            print(f"  💡 Run: bash scripts/enhance/functional_enhancement/run_functional_imputation.sh")
+            return False
+        
+        df = pd.read_csv(enhanced_path)
+        print(f"  ✅ Enhanced dataset loaded: {df.shape[0]:,} variants, {df.shape[1]} features")
+        
+        # CRITICAL: Check no data leakage features
+        leakage_features = ['functional_pathogenicity', 'sift_confidence', 'polyphen_confidence']
+        leakage_found = [f for f in leakage_features if f in df.columns]
+        
+        if leakage_found:
+            print(f"  ❌ CRITICAL: Data leakage features found: {leakage_found}")
+            return False
+        else:
+            print(f"  ✅ No data leakage features detected")
+        
+        # CRITICAL: Check AlphaMissense features present
+        alphamissense_features = ['alphamissense_pathogenicity', 'alphamissense_class']
+        missing_am = [f for f in alphamissense_features if f not in df.columns]
+        
+        if missing_am:
+            print(f"  ❌ CRITICAL: AlphaMissense features missing: {missing_am}")
+            return False
+        else:
+            print(f"  ✅ AlphaMissense features present")
+        
+        # Check AlphaMissense coverage
+        am_coverage = df['alphamissense_pathogenicity'].notna().sum()
+        coverage_rate = am_coverage / len(df) * 100
+        print(f"  📊 AlphaMissense coverage: {am_coverage:,} variants ({coverage_rate:.1f}%)")
+        
+        if coverage_rate < 30:
+            print(f"  ⚠️  Low coverage - expected ~43%")
+        else:
+            print(f"  ✅ Good coverage rate")
+        
+        # Check AlphaMissense score distribution
+        am_scores = df['alphamissense_pathogenicity'].dropna()
+        if len(am_scores) > 0:
+            print(f"  📊 AlphaMissense score range: {am_scores.min():.3f} - {am_scores.max():.3f}")
+            print(f"  📊 Mean pathogenicity: {am_scores.mean():.3f}")
+            
+            # Check for realistic distribution
+            if am_scores.min() < 0 or am_scores.max() > 1:
+                print(f"  ❌ Invalid score range - should be 0-1")
+                return False
+            else:
+                print(f"  ✅ Valid score range")
+        
         return True
-    except ImportError as e:
-        print(f"  ❌ PyTorch import failed: {e}")
+        
+    except Exception as e:
+        print(f"  ❌ Enhanced dataset test failed: {e}")
+        traceback.print_exc()
         return False
 
 def test_pytorch_tabnet():
-    """Test PyTorch TabNet import and basic functionality"""
-    print("\nTesting PyTorch TabNet...")
+    """Test PyTorch TabNet installation"""
+    print("\n🔥 Testing PyTorch TabNet...")
+    
     try:
-        from pytorch_tabnet.tab_model import TabNetClassifier
-        from pytorch_tabnet.tab_model import TabNetRegressor
-        print("  ✅ TabNet import successful")
+        import torch
+        print(f"  ✅ PyTorch version: {torch.__version__}")
         
-        # Test basic initialization
-        model = TabNetClassifier(device_name='cpu')  # Use CPU for testing
-        print("  ✅ TabNet classifier initialization successful")
+        # Check CUDA availability
+        if torch.cuda.is_available():
+            print(f"  ✅ CUDA available: {torch.cuda.get_device_name(0)}")
+        else:
+            print(f"  ⚠️  CUDA not available - will use CPU")
+        
+        from pytorch_tabnet.tab_model import TabNetClassifier
+        print(f"  ✅ TabNet imported successfully")
+        
+        # Test TabNet initialization
+        model = TabNetClassifier(n_d=8, n_a=8, n_steps=3)
+        print(f"  ✅ TabNet model initialized")
+        
         return True
+        
     except ImportError as e:
         print(f"  ❌ TabNet import failed: {e}")
+        print(f"  💡 Install with: pip install pytorch-tabnet")
         return False
     except Exception as e:
-        print(f"  ❌ TabNet initialization failed: {e}")
+        print(f"  ❌ TabNet test failed: {e}")
         return False
 
-def test_gpu_access():
-    """Test GPU availability and details"""
-    print("\nTesting GPU access...")
+def test_sklearn_dependencies():
+    """Test scikit-learn dependencies"""
+    print("\n🔬 Testing Scikit-learn Dependencies...")
+    
     try:
-        import torch
+        from sklearn.model_selection import train_test_split, StratifiedKFold
+        from sklearn.preprocessing import LabelEncoder
+        from sklearn.metrics import accuracy_score, classification_report
+        print(f"  ✅ All sklearn imports successful")
         
-        if not torch.cuda.is_available():
-            print("  ⚠️  CUDA not available (this is normal on login nodes)")
-            print("  ℹ️  GPU access will be tested on compute nodes")
-            return True
+        # Test basic functionality
+        X = np.random.rand(100, 5)
+        y = np.random.choice(['A', 'B', 'C'], 100)
         
-        print(f"  ✅ CUDA available: {torch.cuda.is_available()}")
-        print(f"  ✅ CUDA version: {torch.version.cuda}")
-        print(f"  ✅ GPU count: {torch.cuda.device_count()}")
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         
-        for i in range(torch.cuda.device_count()):
-            gpu_name = torch.cuda.get_device_name(i)
-            print(f"  ✅ GPU {i}: {gpu_name}")
-            
-            # Test basic GPU operations
-            device = torch.device(f'cuda:{i}')
-            test_tensor = torch.randn(10, 10).to(device)
-            result = torch.mm(test_tensor, test_tensor)
-            print(f"  ✅ GPU {i} computation test passed")
+        le = LabelEncoder()
+        y_encoded = le.fit_transform(y)
         
+        print(f"  ✅ Basic sklearn functionality works")
         return True
         
     except Exception as e:
-        print(f"  ❌ GPU test failed: {e}")
-        traceback.print_exc()
+        print(f"  ❌ Sklearn test failed: {e}")
         return False
 
-def test_tabnet_functionality():
-    """Test TabNet with synthetic data"""
-    print("\nTesting TabNet functionality...")
+def test_custom_tabnet_model():
+    """Test our custom TabNet model"""
+    print("\n🧬 Testing Custom TabNet Model...")
+    
     try:
-        from pytorch_tabnet.tab_model import TabNetClassifier
-        import numpy as np
-        import torch
-        
-        # Create synthetic data matching our expected structure
-        n_samples = 200
-        n_features = 80  # Our expected feature count
-        n_classes = 5    # Our classification targets
-        
-        # Generate synthetic data
-        X_synthetic = np.random.randn(n_samples, n_features).astype(np.float32)
-        y_synthetic = np.random.randint(0, n_classes, n_samples)
-        
-        print(f"  ✅ Synthetic data created: {X_synthetic.shape}, {n_classes} classes")
-        
-        # Split data
-        split_idx = int(0.8 * n_samples)
-        X_train, X_val = X_synthetic[:split_idx], X_synthetic[split_idx:]
-        y_train, y_val = y_synthetic[:split_idx], y_synthetic[split_idx:]
-        
-        # Initialize TabNet with our expected parameters
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        model = TabNetClassifier(
-            n_d=32, n_a=32, n_steps=3,  # Smaller for testing
-            gamma=1.3, lambda_sparse=1e-3,
-            device_name=device,
-            verbose=0  # Suppress training output for testing
-        )
-        
-        print(f"  ✅ TabNet model initialized on {device}")
-        
-        # Test training (minimal epochs)
-        model.fit(
-            X_train, y_train,
-            eval_set=[(X_val, y_val)],
-            max_epochs=3,  # Very short for testing
-            patience=3,
-            batch_size=32,
-            virtual_batch_size=16
-        )
-        
-        print("  ✅ TabNet training completed")
-        
-        # Test prediction
-        predictions = model.predict(X_val)
-        probabilities = model.predict_proba(X_val)
-        
-        print(f"  ✅ Predictions shape: {predictions.shape}")
-        print(f"  ✅ Probabilities shape: {probabilities.shape}")
-        
-        # Test feature importance
-        feature_importance = model.feature_importances_
-        print(f"  ✅ Feature importance shape: {feature_importance.shape}")
-        
-        # Test attention/explanation
-        explain_matrix, masks = model.explain(X_val)
-        print(f"  ✅ Explanation matrix shape: {explain_matrix.shape}")
-        print(f"  ✅ Number of attention masks: {len(masks)}")
-        
-        return True
-        
-    except Exception as e:
-        print(f"  ❌ TabNet functionality test failed: {e}")
-        traceback.print_exc()
-        return False
-
-def test_project_structure():
-    """Test project file structure"""
-    print("\nTesting project structure...")
-    
-    expected_files = [
-        'src/model/tabnet_prostate_variant_classifier.py',
-        'requirements.txt',
-        'config/pipeline_config.py',
-        'src/data/preprocessing/tcga_prad_loader.py'
-    ]
-    
-    success = True
-    for file_path in expected_files:
-        if os.path.exists(file_path):
-            print(f"  ✅ {file_path}")
-        else:
-            print(f"  ❌ {file_path} (missing)")
-            success = False
-    
-    return success
-
-def test_tabnet_model_import():
-    """Test importing our custom TabNet model"""
-    print("\nTesting custom TabNet model import...")
-    try:
-        sys.path.append('src/model')
-        from tabnet_prostate_variant_classifier import ProstateVariantTabNet
+        # Import custom model
+        from model.tabnet_prostate_variant_classifier import ProstateVariantTabNet
+        print(f"  ✅ Custom TabNet model imported")
         
         # Test initialization
-        model = ProstateVariantTabNet()
-        print("  ✅ Custom TabNet model imported successfully")
-        print(f"  ✅ Feature groups defined: {list(model.feature_groups.keys())}")
+        model = ProstateVariantTabNet(n_d=32, n_a=32, n_steps=3)
+        print(f"  ✅ Model initialized")
+        
+        # Test feature groups
+        print(f"  📊 Feature groups: {len(model.feature_groups)}")
+        for group_name, features in model.feature_groups.items():
+            print(f"    {group_name}: {len(features)} features")
+        
+        # Check AlphaMissense features in groups
+        all_features = []
+        for features in model.feature_groups.values():
+            all_features.extend(features)
+        
+        am_features_in_groups = [f for f in all_features if 'alphamissense' in f]
+        if am_features_in_groups:
+            print(f"  ✅ AlphaMissense features in groups: {am_features_in_groups}")
+        else:
+            print(f"  ❌ No AlphaMissense features in feature groups")
+            return False
+        
+        # Check banned features
+        print(f"  🚫 Banned features: {model.banned_features}")
         
         return True
         
     except ImportError as e:
         print(f"  ❌ Custom model import failed: {e}")
+        print(f"  💡 Check file path and syntax")
         return False
     except Exception as e:
         print(f"  ❌ Custom model test failed: {e}")
+        traceback.print_exc()
         return False
 
-def main():
-    """Run comprehensive environment validation"""
-    print("=" * 70)
-    print("COMPLETE TABNET ENVIRONMENT VALIDATION")
-    print("=" * 70)
+def test_data_loading():
+    """Test data loading with custom model"""
+    print("\n📁 Testing Data Loading...")
+    
+    try:
+        from model.tabnet_prostate_variant_classifier import ProstateVariantTabNet
+        
+        model = ProstateVariantTabNet()
+        
+        # Test data loading (should work with enhanced dataset)
+        X, y = model.load_data()
+        
+        print(f"  ✅ Data loaded successfully")
+        print(f"  📊 Shape: {X.shape}")
+        print(f"  🎯 Classes: {np.unique(y)}")
+        print(f"  📝 Features: {len(model.feature_names)}")
+        
+        # Check for AlphaMissense features in selected features
+        am_features = [f for f in model.feature_names if 'alphamissense' in f]
+        if am_features:
+            print(f"  ✅ AlphaMissense features selected: {am_features}")
+        else:
+            print(f"  ⚠️  No AlphaMissense features in selected features")
+        
+        return True
+        
+    except Exception as e:
+        print(f"  ❌ Data loading failed: {e}")
+        traceback.print_exc()
+        return False
+
+def test_quick_training():
+    """Test quick training on small subset"""
+    print("\n🚀 Testing Quick Training...")
+    
+    try:
+        from model.tabnet_prostate_variant_classifier import ProstateVariantTabNet
+        from sklearn.model_selection import train_test_split
+        
+        model = ProstateVariantTabNet(n_d=16, n_a=16, n_steps=2)  # Small for testing
+        
+        # Load data
+        X, y = model.load_data()
+        
+        # Use small subset for quick test
+        if len(X) > 1000:
+            indices = np.random.choice(len(X), 1000, replace=False)
+            X, y = X[indices], y[indices]
+        
+        # Split data
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        print(f"  📊 Training on {len(X_train)} samples...")
+        
+        # Quick training
+        model.train(X_train, y_train, max_epochs=10)  # Very few epochs for testing
+        
+        # Quick evaluation
+        accuracy = model.evaluate(X_test, y_test)
+        
+        print(f"  🎯 Test accuracy: {accuracy:.3f}")
+        
+        # Check for suspicious accuracy
+        if accuracy > 0.95:
+            print(f"  ⚠️  WARNING: Suspiciously high accuracy - check for data leakage")
+        else:
+            print(f"  ✅ Realistic accuracy for quick test")
+        
+        return True
+        
+    except Exception as e:
+        print(f"  ❌ Quick training failed: {e}")
+        traceback.print_exc()
+        return False
+
+def run_all_tests():
+    """Run all environment tests"""
+    print("🧪 ENHANCED TABNET ENVIRONMENT TESTING")
+    print("=" * 50)
+    print("Testing AlphaMissense integration and data leakage elimination")
+    print()
     
     tests = [
-        ("Python Version", test_python_version),
-        ("Basic Imports", test_basic_imports),
-        ("PyTorch", test_pytorch),
+        ("Enhanced Dataset", test_enhanced_dataset),
         ("PyTorch TabNet", test_pytorch_tabnet),
-        ("GPU Access", test_gpu_access),
-        ("TabNet Functionality", test_tabnet_functionality),
-        ("Project Structure", test_project_structure),
-        ("Custom TabNet Model", test_tabnet_model_import)
+        ("Sklearn Dependencies", test_sklearn_dependencies),
+        ("Custom TabNet Model", test_custom_tabnet_model),
+        ("Data Loading", test_data_loading),
+        ("Quick Training", test_quick_training),
     ]
     
     results = []
     for test_name, test_func in tests:
-        print(f"\n{'-' * 50}")
-        print(f"RUNNING: {test_name}")
-        print(f"{'-' * 50}")
         try:
             result = test_func()
             results.append((test_name, result))
         except Exception as e:
-            print(f"❌ {test_name} failed with exception: {e}")
+            print(f"❌ {test_name} test crashed: {e}")
             results.append((test_name, False))
     
     # Summary
-    print(f"\n{'=' * 70}")
-    print("ENVIRONMENT TEST SUMMARY")
-    print(f"{'=' * 70}")
+    print(f"\n📊 TEST SUMMARY")
+    print("=" * 30)
     
-    passed = sum(1 for _, result in results if result)
+    passed = 0
     total = len(results)
     
     for test_name, result in results:
         status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{test_name:.<50} {status}")
+        print(f"{status} {test_name}")
+        if result:
+            passed += 1
     
-    print(f"\nOVERALL: {passed}/{total} tests passed")
+    print(f"\n🎯 OVERALL: {passed}/{total} tests passed")
     
     if passed == total:
-        print("\n🎉 ALL TESTS PASSED - Environment ready for TabNet development!")
-        print("✅ Ready to proceed with synthetic data generation")
-        print("✅ Ready for H100 GPU training")
+        print("✅ ALL TESTS PASSED - Environment ready for enhanced TabNet training!")
+        return True
     else:
-        print(f"\n⚠️  {total - passed} tests failed - check issues above")
-        
-    return passed == total
+        print("❌ Some tests failed - fix issues before proceeding")
+        return False
 
 if __name__ == "__main__":
-    main()
+    success = run_all_tests()
+    sys.exit(0 if success else 1)
