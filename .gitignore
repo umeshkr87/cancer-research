@@ -63,6 +63,8 @@ data/raw/variants/vcf_GRCh38/clinvar_vcf_GRCh38.vcf
 data/processed/tabnet_csv/prostate_variants_tabnet.csv
 *.vcf
 *.sif
+*.out
+*.err
 data/processed/tabnet_csv/prostate_variants_tabnet_imputed.csv
 data/processed/tabnet_csv/prostate_variants_tabnet_imputed_v1.csv
 data/processed/tabnet_csv/prostate_variants_tabnet_enhanced.csv

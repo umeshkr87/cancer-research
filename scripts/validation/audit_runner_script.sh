@@ -96,7 +96,7 @@ echo "📁 VALIDATING INPUT FILES - VCF MODE"
 echo "===================================="
 
 # Define file paths - VCF as primary input
-VCF_FILE="$PROJECT_ROOT/data/processed/vep/vep_annotated.vcf"
+VCF_FILE="$PROJECT_ROOT/data/processed/vep/vep_annotated_clean.vcf"
 ENHANCED_FILE="$PROJECT_ROOT/data/processed/tabnet_csv/prostate_variants_tabnet_enhanced.csv"
 
 # Check VCF file (primary input)
@@ -116,8 +116,8 @@ if [ -f "$VCF_FILE" ]; then
     fi
     
     # Check for actual CSQ annotations
-    CSQ_COUNT=$(grep -v "^#" "$VCF_FILE" | head -1000 | grep -c "CSQ=" || echo "0")
-    if [ $CSQ_COUNT -gt 0 ]; then
+    CSQ_COUNT=$(grep -v "^#" "$VCF_FILE" | head -1000 | grep -c "CSQ=" 2>/dev/null || echo "0")
+    if [ "$CSQ_COUNT" -gt 0 ]; then
         echo "✅ CSQ annotations found in VCF data"
     else
         echo "❌ ERROR: No CSQ annotations found in VCF data"
