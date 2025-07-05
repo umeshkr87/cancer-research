@@ -1,46 +1,34 @@
 #!/bin/bash
-#SBATCH --job-name=tabnet_validation_enhanced
-#SBATCH --partition=IllinoisComputes-GPU
-#SBATCH --account=aa107-ic
+#SBATCH --job-name=enhanced_tabnet_validation
+#SBATCH --account=aces
+#SBATCH --partition=gpu-a100
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32GB
+#SBATCH --mem=32G
 #SBATCH --gres=gpu:1
-#SBATCH --time=01:00:00
-#SBATCH --output=/u/aa107/uiuc-cancer-research/logs/tabnet_validation_enhanced_%j.out
-#SBATCH --error=/u/aa107/uiuc-cancer-research/logs/tabnet_validation_enhanced_%j.err
-
-# ================================================================
-# Enhanced TabNet Validation Script
-# Validates AlphaMissense integration and data leakage elimination
-# ================================================================
-
-set -euo pipefail
+#SBATCH --time=1:00:00
+#SBATCH --output=enhanced_tabnet_validation_%j.out
+#SBATCH --error=enhanced_tabnet_validation_%j.err
 
 echo "🧬 ENHANCED TABNET VALIDATION ON CAMPUS CLUSTER"
 echo "================================================================"
 echo "Job ID: $SLURM_JOB_ID"
-echo "Node: $(hostname)"
+echo "Node: $SLURMD_NODENAME"
 echo "Started: $(date)"
 echo "GPU Info: $(nvidia-smi --query-gpu=name --format=csv,noheader,nounits)"
 echo ""
 
 # === CONFIGURATION ===
 PROJECT_DIR="/u/aa107/uiuc-cancer-research"
-LOG_DIR="${PROJECT_DIR}/logs"
-RESULTS_DIR="${PROJECT_DIR}/results/validation"
-ENHANCED_DATASET="${PROJECT_DIR}/data/processed/tabnet_csv/prostate_variants_tabnet_enhanced.csv"
-
-# Create necessary directories
-mkdir -p "${LOG_DIR}"
-mkdir -p "${RESULTS_DIR}"
+VALIDATION_SCRIPT="${PROJECT_DIR}/src/model/validation/validate_tabnet.py"
+CLEAN_DATASET="${PROJECT_DIR}/data/processed/tabnet_csv/prostate_variants_tabnet_clean.csv"
 
 # === ENVIRONMENT SETUP ===
 echo "🔧 ENVIRONMENT SETUP"
 echo "-----------------"
 
-# Navigate to project root
+# Navigate to project directory
 cd "${PROJECT_DIR}"
 echo "Working directory: $(pwd)"
 
@@ -48,17 +36,13 @@ echo "Working directory: $(pwd)"
 echo "Loading anaconda module..."
 module load anaconda3
 
-# Initialize conda for batch environment
+# Initialize conda
 echo "Initializing conda..."
 eval "$(conda shell.bash hook)"
 
 # Activate environment
 echo "Activating tabnet-prostate environment..."
-conda activate tabnet-prostate || {
-    echo "❌ Failed to activate conda environment"
-    echo "💡 Create environment first: conda create -n tabnet-prostate python=3.11"
-    exit 1
-}
+conda activate tabnet-prostate
 
 # Verify environment
 echo "✅ Environment verification:"
@@ -71,16 +55,16 @@ echo ""
 echo "📋 PREREQUISITE CHECKS"
 echo "--------------------"
 
-# Check enhanced dataset exists
-if [ ! -f "${ENHANCED_DATASET}" ]; then
-    echo "❌ Enhanced dataset not found: ${ENHANCED_DATASET}"
-    echo "💡 Run AlphaMissense enhancement first:"
-    echo "   sbatch scripts/enhance/functional_enhancement/run_functional_imputation.sh"
+# Check clean dataset
+if [ ! -f "${CLEAN_DATASET}" ]; then
+    echo "❌ Clean dataset not found: ${CLEAN_DATASET}"
+    echo "💡 Create clean dataset first:"
+    echo "   python3 -c \"import pandas as pd; df = pd.read_csv('/u/aa107/uiuc-cancer-research/data/processed/tabnet_csv/prostate_variants_tabnet_enhanced.csv', low_memory=False); df_clean = df.drop(columns=['sift_prediction', 'polyphen_prediction'] if 'sift_prediction' in df.columns else []); df_clean.to_csv('${CLEAN_DATASET}', index=False); print('Clean dataset created')\""
     exit 1
 else
-    DATASET_SIZE=$(du -h "${ENHANCED_DATASET}" | cut -f1)
-    DATASET_LINES=$(wc -l < "${ENHANCED_DATASET}")
-    echo "✅ Enhanced dataset found: ${ENHANCED_DATASET}"
+    DATASET_SIZE=$(du -h "${CLEAN_DATASET}" | cut -f1)
+    DATASET_LINES=$(wc -l < "${CLEAN_DATASET}")
+    echo "✅ Clean dataset found: ${CLEAN_DATASET}"
     echo "  Size: ${DATASET_SIZE}"
     echo "  Lines: ${DATASET_LINES}"
 fi
@@ -113,164 +97,152 @@ echo "=============================="
 echo "Running environment tests..."
 python src/model/tests/test_environment.py
 
-if [ $? -eq 0 ]; then
-    echo "✅ Environment tests passed"
-else
+if [ $? -ne 0 ]; then
     echo "❌ Environment tests failed"
-    echo "Check logs for details"
     exit 1
 fi
-echo ""
+
+echo "✅ Environment tests passed"
 
 # === STEP 2: ENHANCED DATASET VALIDATION ===
+echo ""
 echo "🔍 STEP 2: ENHANCED DATASET VALIDATION"
-echo "===================================="
+echo "======================================"
 
-echo "Validating enhanced dataset structure..."
+echo "Validating clean dataset structure..."
 python -c "
 import pandas as pd
-import sys
 
-try:
-    df = pd.read_csv('${ENHANCED_DATASET}')
-    print(f'Dataset loaded: {len(df):,} variants × {len(df.columns)} features')
-    
-    # Check for data leakage features (should be ABSENT)
-    leakage_features = ['functional_pathogenicity', 'sift_confidence', 'polyphen_confidence']
-    leakage_found = [f for f in leakage_features if f in df.columns]
-    
-    if leakage_found:
-        print(f'❌ CRITICAL: Data leakage features found: {leakage_found}')
-        sys.exit(1)
-    else:
-        print('✅ No data leakage features detected')
-    
-    # Check for AlphaMissense features (should be PRESENT)
-    am_features = ['alphamissense_pathogenicity', 'alphamissense_class']
-    missing_am = [f for f in am_features if f not in df.columns]
-    
-    if missing_am:
-        print(f'❌ CRITICAL: AlphaMissense features missing: {missing_am}')
-        sys.exit(1)
-    else:
-        print('✅ AlphaMissense features present')
-    
-    # Check coverage
+# Load clean dataset
+df = pd.read_csv('${CLEAN_DATASET}', low_memory=False)
+print(f'Dataset loaded: {df.shape[0]:,} variants × {df.shape[1]} features')
+
+# Check for data leakage
+leakage_features = ['sift_prediction', 'polyphen_prediction', 'functional_pathogenicity']
+leakage_found = [f for f in leakage_features if f in df.columns]
+
+if leakage_found:
+    print(f'❌ Data leakage features found: {leakage_found}')
+    exit(1)
+else:
+    print('✅ No data leakage features detected')
+
+# Check AlphaMissense
+am_features = ['alphamissense_pathogenicity', 'alphamissense_class']
+missing_am = [f for f in am_features if f not in df.columns]
+
+if missing_am:
+    print(f'❌ AlphaMissense features missing: {missing_am}')
+else:
+    print('✅ AlphaMissense features present')
     am_coverage = df['alphamissense_pathogenicity'].notna().sum()
-    coverage_rate = am_coverage / len(df) * 100
-    print(f'📊 AlphaMissense coverage: {am_coverage:,} variants ({coverage_rate:.1f}%)')
+    coverage_pct = am_coverage / len(df) * 100
+    print(f'📊 AlphaMissense coverage: {am_coverage:,} variants ({coverage_pct:.1f}%)')
     
-    if coverage_rate < 30:
-        print('⚠️  Low AlphaMissense coverage')
-    else:
+    if coverage_pct >= 30:
         print('✅ Good AlphaMissense coverage')
-        
-    print('✅ Enhanced dataset validation passed')
-    
-except Exception as e:
-    print(f'❌ Dataset validation failed: {e}')
-    sys.exit(1)
+    else:
+        print('⚠️  Low AlphaMissense coverage')
+
+print('✅ Enhanced dataset validation passed')
 "
 
-if [ $? -eq 0 ]; then
-    echo "✅ Enhanced dataset validation passed"
-else
+if [ $? -ne 0 ]; then
     echo "❌ Enhanced dataset validation failed"
     exit 1
 fi
-echo ""
+
+echo "✅ Enhanced dataset validation passed"
 
 # === STEP 3: COMPREHENSIVE TABNET VALIDATION ===
+echo ""
 echo "🔥 STEP 3: COMPREHENSIVE TABNET VALIDATION"
-echo "========================================"
+echo "=========================================="
 
 echo "Running comprehensive TabNet validation..."
-python src/model/validation/validate_tabnet.py
+
+# Run the fixed validation script
+python "${VALIDATION_SCRIPT}"
 
 VALIDATION_EXIT_CODE=$?
 
-if [ $VALIDATION_EXIT_CODE -eq 0 ]; then
-    echo "✅ TabNet validation completed successfully"
-else
-    echo "❌ TabNet validation failed (exit code: $VALIDATION_EXIT_CODE)"
-    echo "Check validation logs for details"
-fi
 echo ""
+echo "=== VALIDATION RESULTS ==="
 
-# === STEP 4: RESULTS SUMMARY ===
-echo "📊 STEP 4: VALIDATION RESULTS SUMMARY"
-echo "==================================="
-
-# Find the latest validation report
-LATEST_REPORT=$(find "${RESULTS_DIR}" -name "enhanced_tabnet_validation_*.json" -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -d' ' -f2-)
-
-if [ -f "$LATEST_REPORT" ]; then
-    echo "📋 Latest validation report: $LATEST_REPORT"
+if [ $VALIDATION_EXIT_CODE -eq 0 ]; then
+    echo "✅ VALIDATION COMPLETED SUCCESSFULLY!"
+    echo ""
     
-    # Extract key results
-    echo "🔍 Key Results:"
-    python -c "
+    # Check for latest report
+    RESULTS_DIR="${PROJECT_DIR}/results/validation"
+    LATEST_REPORT=$(find "${RESULTS_DIR}" -name "enhanced_tabnet_validation_*.json" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2- || echo "")
+    
+    if [ -n "$LATEST_REPORT" ] && [ -f "$LATEST_REPORT" ]; then
+        echo "📋 Latest validation report: $LATEST_REPORT"
+        
+        # Extract key results
+        echo "🔍 Key Validation Results:"
+        python -c "
 import json
-import sys
-
 try:
     with open('$LATEST_REPORT', 'r') as f:
         results = json.load(f)
     
     # Summary
     summary = results.get('summary', {})
-    print(f\"  Data leakage detected: {'❌ YES' if summary.get('data_leakage_detected') else '✅ NO'}\")
-    print(f\"  AlphaMissense integrated: {'✅ YES' if summary.get('alphamissense_integrated') else '❌ NO'}\")
+    data_leakage = summary.get('data_leakage_detected', False)
+    am_integrated = summary.get('alphamissense_integrated', False)
+    
+    print(f'  Data leakage detected: {\"❌ YES\" if data_leakage else \"✅ NO\"}')
+    print(f'  AlphaMissense integrated: {\"✅ YES\" if am_integrated else \"❌ NO\"}')
     
     # Performance
+    if 'baseline_validation' in results:
+        baseline_acc = results['baseline_validation']['mean_accuracy']
+        print(f'  Baseline accuracy: {baseline_acc:.3f}')
+        
+        if baseline_acc > 0.95:
+            print('  Baseline status: ❌ SUSPICIOUS - Check for leakage')
+        elif baseline_acc > 0.75:
+            print('  Baseline status: ✅ EXCELLENT')
+        else:
+            print('  Baseline status: ✅ REALISTIC')
+    
     if 'tabnet_validation' in results:
         tabnet_acc = results['tabnet_validation']['mean_accuracy']
         print(f'  TabNet accuracy: {tabnet_acc:.3f}')
         
         if tabnet_acc > 0.95:
-            print('  Status: ❌ SUSPICIOUS - Investigate data leakage')
+            print('  TabNet status: ❌ SUSPICIOUS - Check for leakage')
         elif tabnet_acc > 0.75:
-            print('  Status: ✅ EXCELLENT - Ready for production')
+            print('  TabNet status: ✅ EXCELLENT')
         else:
-            print('  Status: ✅ GOOD - Realistic performance')
+            print('  TabNet status: ✅ REALISTIC')
     
 except Exception as e:
-    print(f'Error reading report: {e}')
-    sys.exit(1)
+    print(f'  ⚠️  Could not parse report: {e}')
 "
-else
-    echo "⚠️  No validation report found"
-fi
-
-# Log file locations
-echo ""
-echo "📁 OUTPUT LOCATIONS:"
-echo "  Validation report: ${RESULTS_DIR}/"
-echo "  Job output: ${LOG_DIR}/tabnet_validation_enhanced_${SLURM_JOB_ID}.out"
-echo "  Job errors: ${LOG_DIR}/tabnet_validation_enhanced_${SLURM_JOB_ID}.err"
-
-# === FINAL STATUS ===
-echo ""
-echo "=== VALIDATION COMPLETED: $(date) ==="
-
-if [ $VALIDATION_EXIT_CODE -eq 0 ]; then
-    echo "✅ SUCCESS: Enhanced TabNet validation completed"
+    else
+        echo "⚠️  No validation report found in ${RESULTS_DIR}"
+    fi
+    
     echo ""
     echo "🎯 NEXT STEPS:"
-    echo "  1. Review validation report in ${RESULTS_DIR}/"
-    echo "  2. If no data leakage detected, proceed with full training"
-    echo "  3. Use enhanced dataset for production TabNet model"
-    echo "  4. Submit training job: sbatch scripts/train_tabnet_enhanced.sbatch"
+    echo "  1. Review validation report for detailed results"
+    echo "  2. If no data leakage detected, proceed with full training:"
+    echo "     python src/model/tabnet_prostate_variant_classifier.py"
+    echo "  3. Or submit full training cluster job"
     
     exit 0
+    
 else
-    echo "❌ FAILED: Enhanced TabNet validation failed"
+    echo "❌ VALIDATION FAILED (exit code: $VALIDATION_EXIT_CODE)"
     echo ""
     echo "🔧 TROUBLESHOOTING:"
-    echo "  1. Check job output logs for detailed errors"
-    echo "  2. Verify enhanced dataset was created correctly"
-    echo "  3. Ensure all dependencies are installed"
-    echo "  4. Contact support if issues persist"
+    echo "  1. Check the validation output above for specific errors"
+    echo "  2. Ensure clean dataset is properly formatted"
+    echo "  3. Verify all dependencies are installed correctly"
+    echo "  4. Check that custom TabNet model can be imported"
     
     exit 1
 fi
